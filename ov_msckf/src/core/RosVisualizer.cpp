@@ -32,11 +32,14 @@ RosVisualizer::RosVisualizer(ros::NodeHandle &nh, VioManager* app, Simulator *si
     mTfBr = new tf::TransformBroadcaster();
 
     // Setup pose and path publisher
-    pub_poseimu = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("/ov_msckf/poseimu", 2);
+    pub_poseimu = nh.advertise<geometry_msgs::PoseStamped>("/ov_msckf/poseimu", 2);
+    pub_posecam0 = nh.advertise<geometry_msgs::PoseStamped>("/ov_msckf/posecam0", 2);
     ROS_INFO("Publishing: %s", pub_poseimu.getTopic().c_str());
     pub_odomimu = nh.advertise<nav_msgs::Odometry>("/ov_msckf/odomimu", 2);
+    pub_odomcam0 = nh.advertise<nav_msgs::Odometry>("/ov_msckf/odomcam0", 2);
     ROS_INFO("Publishing: %s", pub_odomimu.getTopic().c_str());
     pub_pathimu = nh.advertise<nav_msgs::Path>("/ov_msckf/pathimu", 2);
+    pub_pathcam0 = nh.advertise<nav_msgs::Path>("/ov_msckf/pathcam0", 2);
     ROS_INFO("Publishing: %s", pub_pathimu.getTopic().c_str());
 
     // 3D points publishing
@@ -218,6 +221,9 @@ void RosVisualizer::visualize_odometry(double timestamp) {
     // Finally, publish the resulting odometry message
     pub_odomimu.publish(odomIinM);
 
+    nav_msgs::Odometry odomIinM0=odomIinM;
+    odomIinM0.pose.pose.position.x+=0.1;
+    pub_odomcam0.publish(odomIinM0);
 
 }
 
@@ -310,7 +316,7 @@ void RosVisualizer::publish_state() {
             poseIinM.pose.covariance[6*r+c] = covariance_posori(r,c);
         }
     }
-    pub_poseimu.publish(poseIinM);
+    //pub_poseimu.publish(poseIinM);
 
 
     //=========================================================
@@ -322,6 +328,7 @@ void RosVisualizer::publish_state() {
     posetemp.pose = poseIinM.pose.pose;
     poses_imu.push_back(posetemp);
 
+    pub_poseimu.publish(posetemp);
     // Create our path (imu)
     // NOTE: We downsample the number of poses as needed to prevent rviz crashes
     // NOTE: https://github.com/ros-visualization/rviz/issues/1107
@@ -334,8 +341,35 @@ void RosVisualizer::publish_state() {
     }
     pub_pathimu.publish(arrIMU);
 
+
+
+    geometry_msgs::PoseWithCovarianceStamped poseIinM0=poseIinM;
+    poseIinM0.pose.pose.position.x +=0.1;
+    //pub_posecam0.publish(poseIinM0);
+
+
+    //=========================================================
+    //=========================================================
+
+    // Append to our pose vector
+    geometry_msgs::PoseStamped posetemp0;
+    posetemp0.header = poseIinM0.header;
+    posetemp0.pose = poseIinM0.pose.pose;
+    poses_cam0.push_back(posetemp0);
+    pub_posecam0.publish(posetemp0);
+
+
+    nav_msgs::Path arrCAM0;
+    arrCAM0.header.stamp = ros::Time::now();
+    arrCAM0.header.seq = poses_seq_imu;
+    arrCAM0.header.frame_id = "global";
+    for(size_t i=0; i<poses_cam0.size(); i+=std::floor(poses_cam0.size()/16384.0)+1) {
+        arrCAM0.poses.push_back(poses_cam0.at(i));
+    }
+    pub_pathcam0.publish(arrCAM0);
+
     // Move them forward in time
-    poses_seq_imu++;
+    //poses_seq_imu++;
 
     // Publish our transform on TF
     // NOTE: since we use JPL we have an implicit conversion to Hamilton when we publish

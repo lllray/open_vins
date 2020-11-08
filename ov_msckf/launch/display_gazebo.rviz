@@ -8,6 +8,7 @@ Panels:
         - /TF1
         - /TF1/Frames1
         - /TF1/Tree1
+        - /Path CAM01
       Splitter Ratio: 0.600000024
     Tree Height: 586
   - Class: rviz/Selection
@@ -61,11 +62,15 @@ Visualization Manager:
           Value: true
         base_link_frd:
           Value: false
+        cam0:
+          Value: true
         camera_link:
           Value: true
         fcu:
           Value: false
         global:
+          Value: true
+        imu:
           Value: true
         local_origin:
           Value: false
@@ -84,6 +89,9 @@ Visualization Manager:
       Show Names: true
       Tree:
         global:
+          imu:
+            cam0:
+              {}
           local_origin:
             fcu:
               base_link:
@@ -138,7 +146,7 @@ Visualization Manager:
       Length: 0.300000012
       Line Style: Billboards
       Line Width: 0.0299999993
-      Name: Path GT
+      Name: Path CAM0
       Offset:
         X: 0
         Y: 0
@@ -148,7 +156,7 @@ Visualization Manager:
       Radius: 0.0299999993
       Shaft Diameter: 0.100000001
       Shaft Length: 0.100000001
-      Topic: /ov_msckf/pathgt
+      Topic: /ov_msckf/pathcam0
       Unreliable: false
       Value: true
     - Alpha: 0.800000012
@@ -326,25 +334,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 17.1060371
+      Distance: 10.6856661
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 4.06771517
-        Y: -0.204885066
-        Z: -0.490181208
+        X: 2.66882634
+        Y: -0.0200704671
+        Z: -0.289889485
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.549796581
+      Pitch: 0.524796605
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.11857724
+      Yaw: 3.20358157
     Saved: ~
 Window Geometry:
   Displays:

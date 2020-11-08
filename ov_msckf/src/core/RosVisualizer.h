@@ -121,6 +121,7 @@ namespace ov_msckf {
 
         // Our publishers
         ros::Publisher pub_poseimu, pub_odomimu, pub_pathimu;
+        ros::Publisher pub_posecam0, pub_odomcam0, pub_pathcam0;
         ros::Publisher pub_points_msckf, pub_points_slam, pub_points_aruco, pub_points_sim;
         ros::Publisher pub_tracks;
         ros::Publisher pub_keyframe_pose, pub_keyframe_point, pub_keyframe_extrinsic, pub_keyframe_intrinsics;
@@ -129,7 +130,7 @@ namespace ov_msckf {
         // For path viz
         unsigned int poses_seq_imu = 0;
         vector<geometry_msgs::PoseStamped> poses_imu;
-
+        vector<geometry_msgs::PoseStamped> poses_cam0;
         // Groundtruth infomation
         ros::Publisher pub_pathgt, pub_posegt;
         double summed_rmse_ori = 0.0;
